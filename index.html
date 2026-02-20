@@ -1,0 +1,653 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>菲提安的备忘录 - 灵异匿名版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0c10 url('data:image/svg+xml;utf8,<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><path d="M40 10 L70 40 L40 70 L10 40 Z" fill="none" stroke="%23222f3c" stroke-width="1.5"/></svg>');
+            background-size: 80px 80px;
+            font-family: 'Helvetica', 'Arial', 'Microsoft YaHei', sans-serif;
+            padding: 20px 10px;
+            color: #b4c4d9;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: rgba(10, 15, 22, 0.92);
+            backdrop-filter: blur(3px);
+            border: 1px solid #5a3e3a;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8), 0 0 0 1px #7a4f4a inset;
+            overflow: hidden;
+            color: #d6dbe0;
+        }
+
+        .header {
+            background: #130e1c;
+            background: linear-gradient(145deg, #1a1222 0%, #0f0a16 100%);
+            color: #eed9c9;
+            padding: 15px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #7a4a3f;
+            box-shadow: 0 2px 10px #3e1e1e;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            font-family: 'Microsoft YaHei', sans-serif;
+            text-shadow: 0 0 5px #a04545, 0 2px 2px black;
+        }
+
+        .header h1 small {
+            font-size: 0.8rem;
+            color: #b27f6e;
+            margin-left: 10px;
+            text-shadow: none;
+        }
+
+        .login-panel {
+            background: #1e1628;
+            padding: 8px 16px;
+            border-radius: 40px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+            border: 1px solid #8b4f44;
+            box-shadow: inset 0 1px 4px #2a0f0f;
+        }
+
+        .login-panel input {
+            background: #271f30;
+            border: 1px solid #6f433b;
+            color: #dfd2c5;
+            padding: 6px 12px;
+            border-radius: 30px;
+            width: 130px;
+            font-size: 0.9rem;
+        }
+
+        .login-panel input::placeholder {
+            color: #8f7a8c;
+        }
+
+        .login-panel input:disabled {
+            background: #2d2338;
+            color: #91839c;
+            opacity: 0.8;
+        }
+
+        .login-panel button {
+            background: #3f2e3c;
+            border: 1px solid #a05d4b;
+            color: #ebd9ce;
+            padding: 6px 14px;
+            border-radius: 30px;
+            cursor: not-allowed;
+            font-weight: bold;
+            opacity: 0.8;
+            box-shadow: 0 2px 3px #1f0d0d;
+        }
+
+        .login-panel .register-btn {
+            background: #4d373a;
+        }
+
+        .login-panel span {
+            color: #c09e8f;
+            font-size: 0.8rem;
+            text-shadow: 0 0 2px black;
+        }
+
+        .nav {
+            background: #1a1525;
+            background: linear-gradient(0deg, #151020, #221b30);
+            padding: 8px 20px;
+            border-bottom: 1px solid #684b44;
+            border-top: 1px solid #48322e;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            font-size: 0.95rem;
+        }
+
+        .nav a {
+            color: #dbbdae;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.15s;
+            text-shadow: 0 1px 2px black;
+        }
+
+        .nav a:hover {
+            color: #f2aa8f;
+            text-decoration: underline;
+            text-shadow: 0 0 5px #d44;
+        }
+
+        .board-info {
+            padding: 15px 20px 5px;
+            background: #100e19;
+            border-bottom: 1px dashed #6e4b42;
+            font-size: 0.95rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            color: #cbb2a6;
+        }
+
+        .thread-list {
+            padding: 5px 15px 10px;
+        }
+
+        .thread-header {
+            display: flex;
+            padding: 8px 0;
+            border-bottom: 2px solid #a5483b;
+            font-weight: bold;
+            color: #efc9b7;
+            font-size: 0.9rem;
+            text-shadow: 0 1px 3px black;
+        }
+
+        .thread-header span:first-child { width: 60px; text-align: center; }
+        .thread-header span:nth-child(2) { flex: 1; }
+        .thread-header span:nth-child(3) { width: 100px; text-align: center; }
+        .thread-header span:nth-child(4) { width: 110px; text-align: center; }
+
+        #threadRowsContainer {
+            min-height: 400px;
+        }
+
+        .thread-row {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid #3f2b2b;
+            align-items: center;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+            color: #cbd2da;
+        }
+
+        .thread-row:hover {
+            background: #261e2e;
+            border-bottom-color: #b35242;
+            box-shadow: 0 0 8px #811e1e33;
+        }
+
+        .thread-row .icon {
+            width: 60px;
+            text-align: center;
+            color: #c09c8a;
+            font-size: 1.2rem;
+            filter: drop-shadow(0 0 2px #b33);
+        }
+
+        .thread-row .title {
+            flex: 1;
+            font-weight: 500;
+            color: #ebdad1;
+        }
+
+        .thread-row .title .reply-count {
+            color: #e66558;
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+
+        .thread-row .date {
+            width: 100px;
+            text-align: center;
+            color: #b09792;
+            font-size: 0.85rem;
+        }
+
+        .thread-row .last {
+            width: 110px;
+            text-align: center;
+            color: #b7a09c;
+            font-size: 0.85rem;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 20px 0 15px;
+            flex-wrap: wrap;
+        }
+
+        .pagination button {
+            background: #211b2b;
+            border: 1px solid #80524a;
+            padding: 6px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            color: #e3cfc4;
+            font-weight: 500;
+            box-shadow: 0 2px 5px #0a0202;
+            transition: 0.1s;
+        }
+
+        .pagination button.active {
+            background: #6e3c3a;
+            border-color: #c77a62;
+            color: #fff1e2;
+            box-shadow: 0 0 10px #cc5555;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.3;
+            cursor: default;
+            box-shadow: none;
+        }
+
+        .pagination button:not(:disabled):hover {
+            background: #3f2d38;
+            border-color: #c96f5a;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #17121e;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 24px;
+            border: 2px solid #a44c3b;
+            padding: 25px;
+            box-shadow: 0 30px 50px #000000dd, 0 0 0 1px #d3775a inset;
+            position: relative;
+        }
+
+        .modal-content h2 {
+            font-size: 2rem;
+            color: #f2cfbc;
+            border-bottom: 1px solid #994d3d;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            padding-right: 30px;
+            text-shadow: 0 0 5px #922;
+        }
+
+        .modal-meta {
+            display: flex;
+            gap: 25px;
+            color: #c7a491;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .modal-body {
+            background: #1e1629;
+            padding: 20px;
+            border-radius: 20px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            font-family: 'Microsoft YaHei', sans-serif;
+            border-left: 6px solid #b3482e;
+            margin-bottom: 20px;
+            color: #e3d9d0;
+            box-shadow: inset 0 0 15px #0f0505;
+        }
+
+        .modal-reply {
+            background: #241e30;
+            padding: 15px;
+            border-radius: 20px;
+            border: 1px solid #7d4e45;
+        }
+
+        .modal-reply p {
+            margin-bottom: 8px;
+            border-bottom: 1px dashed #644c4c;
+            padding-bottom: 5px;
+            color: #d0c0b8;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 2.5rem;
+            color: #c77963;
+            cursor: pointer;
+            line-height: 1;
+            background: transparent;
+            border: none;
+            width: 40px; height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: 0.15s;
+            text-shadow: 0 0 5px black;
+        }
+
+        .close-modal:hover {
+            color: #f5a48b;
+            background: #4d2d2a;
+        }
+
+        .footer {
+            background: #130f1c;
+            padding: 12px 20px;
+            font-size: 0.85rem;
+            color: #b59f96;
+            border-top: 1px solid #64463f;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 600px) {
+            .thread-header span:nth-child(3), .thread-header span:nth-child(4) { display: none; }
+            .thread-row .date, .thread-row .last { display: none; }
+            .login-panel input { width: 100px; }
+            .login-panel { gap: 4px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>菲提安的备忘录 <small>～ 怪谈・都市传说合集 ～</small></h1>
+        <div class="login-panel">
+            <input type="text" placeholder="匿名" value="匿名" readonly disabled>
+            <input type="password" placeholder="密码" disabled>
+            <button disabled>登录</button>
+            <button class="register-btn" disabled>注册</button>
+            <span>已停止新会员注册</span>
+        </div>
+    </div>
+
+    <div class="nav">
+        <a href="#">首页</a>
+        <a href="#">灵异板</a>
+        <a href="#">未解</a>
+        <a href="#">传承</a>
+        <a href="#">管理</a>
+    </div>
+
+    <div class="board-info">
+        <span>📋 灵异板 · 全部23帖</span>
+        <span>最后更新:2023/08/31 23:14</span>
+    </div>
+
+    <div class="thread-list">
+        <div class="thread-header">
+            <span>📌</span>
+            <span>标题</span>
+            <span>回复</span>
+            <span>最后回复</span>
+        </div>
+        <div id="threadRowsContainer"></div>
+        <div class="pagination" id="paginationControls"></div>
+    </div>
+
+    <div class="footer">
+        <span>since 2022 · 菲提安的备忘录</span>
+        <span>📡 访问: 今日128 / 总3841</span>
+    </div>
+</div>
+
+<div id="postModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" id="modalClose">&times;</span>
+        <h2 id="modalTitle">标题</h2>
+        <div class="modal-meta">
+            <span id="modalAuthor">发帖人</span>
+            <span id="modalDate">发布日期</span>
+            <span id="modalReplies">回复数</span>
+        </div>
+        <div class="modal-body" id="modalBody">正文...</div>
+        <div class="modal-reply" id="modalRepliesList"></div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const baseThreads = [
+            {
+                title: '《知真名湖的吸血神传说》',
+                author: '菲提安',
+                date: '2023-08-21',
+                replies: 13,
+                last: '2023-08-29',
+                body: `幕末到明治初期，知真名湖周边是一个频繁发生神隐的地方。
+偶尔会发现被吸干鲜血的尸体，人们相信这是侵犯圣地者的血被山神吸走的结果。
+然而，当周边的村庄将家畜作为祭品献上时，该村的灾害竟然得以平息。更进一步的是，那些破坏农作物的害兽似乎也遭到了驱逐。因此，该村的村民开始将吸血神作为地主神来进行信仰。
+村民们现在仍然相信那位神的存在和历史，关于神隐和“吸血神”现象的原因依然没有得到阐明。`,
+                repliesList: [
+                    '匿名：我奶奶也说过千万别靠近那个湖。',
+                    '匿名：吸血神算是山神的一种吗？',
+                    '匿名：知真名湖到底在哪儿？想去看看。'
+                ]
+            },
+            {
+                title: '裂口女・隧道另一端的异界',
+                author: '过路人',
+                date: '2023-07-29',
+                replies: 24,
+                last: '2023-08-14',
+                body: '岐阜县某处的废弃隧道。深夜零点过后会出现一个戴口罩的女人询问“我漂亮吗？”如果回答“漂亮”，她会摘下口罩露出裂开的嘴再次询问。如果回答不上来，就会被她用剪刀追赶，最后被带入异界。2022年有两名年轻人失踪。',
+                repliesList: [
+                    '匿名：以前就住在那隧道附近，半夜确实听到过女人笑声。',
+                    '匿名：据说绝对不能回答“丑”。',
+                    '过路人：当地人都不敢靠近。'
+                ]
+            },
+            {
+                title: '如月车站・消失乘客的电波',
+                author: '诺查丹玛斯',
+                date: '2023-05-17',
+                replies: 47,
+                last: '2023-08-02',
+                body: '2004年，一位网名“はすみ”的人发帖称在深夜私铁“如月车站”下车。车站空无一人，手机信号异常，警察让他沿着铁轨走。最后发帖“妖怪来了，救命”后失联。2023年7月，有人在那个频段接收到了摩斯电码，解码后是“我还在如月站”。',
+                repliesList: [
+                    '匿名：那个帖子我到现在还保存着。',
+                    '匿名：平行世界假说挺有说服力。',
+                    '诺查丹玛斯：分析了录音，确实是女声。'
+                ]
+            },
+            {
+                title: '玛丽小姐的电话号码',
+                author: '匿名D',
+                date: '2023-03-10',
+                replies: 31,
+                last: '2023-07-19',
+                body: '用手机在深夜3点拨打“#0909”，会有一个小女孩接电话问“今天陪我玩吗？”如果回答“好”，三天后的同一时刻，门外会响起“我现在在你家门口”的声音和门铃声。开门却空无一人，第四天声音会出现在房间里。',
+                repliesList: [
+                    '匿名：试过的朋友第三天就搬家了。',
+                    '匿名：我们公寓也发生过这事。',
+                    '匿名D：绝对不要打。'
+                ]
+            },
+            {
+                title: '托梦石佛・上州的诅咒',
+                author: 'K匿',
+                date: '2023-02-01',
+                replies: 19,
+                last: '2023-06-12',
+                body: '群马县的废寺里有一尊古老的地藏像。深夜在像头上放一颗石子，当晚就会梦见近日将死之人的面孔。第二天再放一颗，会梦见另一个死者。连续三天的话，第四天会梦见自己，一周内必有灾祸。',
+                repliesList: [
+                    '匿名：当地老人管这叫“逆探知”，很害怕。',
+                    'K匿：听说试过的人梦见自己后一直身体不好。'
+                ]
+            },
+            {
+                title: '冥婚戒指・大正的遗物',
+                author: '菲提安',
+                date: '2022-12-11',
+                replies: 52,
+                last: '2023-05-03',
+                body: '大正时期，一位富豪为早逝的女儿举办冥婚订制了这枚银戒指。此后拥有它的单身者每晚都会梦见穿白无垢的新娘，第七天意识丧失后死亡。目前戒指被菲提安封印在铁箱中，但据说有仿制品流传。',
+                repliesList: [
+                    '匿名：哪怕看看照片也好啊。',
+                    '菲提安：照片也可能附咒，不能公开。',
+                    '匿名：好像在古董集市见过类似的。'
+                ]
+            }
+        ];
+
+        const extraTitles = [
+            '血腥玛丽・镜中低语', '取子箱・饭纲山的禁忌', '扭来扭去・山道上的黑影',
+            '八尺大人・深夜的巡游', '间隙女・墙缝里的视线', '犬鸣隧道・录音带的诅咒',
+            '狐狗狸・降灵游戏的后果', '人面犬・都市报的目击', ' hitobashira・人柱传说',
+            '百物语・最后一根蜡烛', '白蛇・废神社的贡品', '幽灵列车・旧线消失的车站',
+            '二重身・另一个自己', '阎魔判・冥界审判', '送り犬・夜路伴随',
+            '海难・幽灵船来信', '旧书店・诅咒的写真集'
+        ];
+        const extraAuthors = ['匿名', '通りすがり', '靈異愛好者', '古書店主人', '田野调查员', '神主后人', '廃墟探検家', '物書き'];
+        for (let i = 0; i < 17; i++) {
+            const idx = i % extraTitles.length;
+            const authorIdx = (i * 3) % extraAuthors.length;
+            const day = (i % 28) + 1;
+            const month = (i % 8) + 1;
+            const dateStr = `2023-${month.toString().padStart(2,'0')}-${day.toString().padStart(2,'0')}`;
+            const lastDay = (day + 5) % 28 + 1;
+            const lastMonth = month + (lastDay > 20 ? 1 : 0);
+            const lastDate = `2023-${(lastMonth>12?12:lastMonth).toString().padStart(2,'0')}-${lastDay.toString().padStart(2,'0')}`;
+            const replyCount = Math.floor(Math.random() * 30) + 5;
+            baseThreads.push({
+                title: extraTitles[idx] + (i%2===0?'・怪异':'・传闻'),
+                author: extraAuthors[authorIdx],
+                date: dateStr,
+                replies: replyCount,
+                last: lastDate,
+                body: `这是关于「${extraTitles[idx]}」的匿名讨论帖。有多个目击记录，但真实性未知。欢迎提供更多信息。`,
+                repliesList: [
+                    '匿名：我也听说过类似的事情。',
+                    '匿名：有没有更详细的资料？',
+                    extraAuthors[authorIdx] + '：暂时只收集到这些。'
+                ]
+            });
+        }
+
+        const allThreads = baseThreads;
+        const pageSize = 10;
+        let currentPage = 1;
+        const totalPages = Math.ceil(allThreads.length / pageSize);
+        const container = document.getElementById('threadRowsContainer');
+        const paginationDiv = document.getElementById('paginationControls');
+        const modal = document.getElementById('postModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalAuthor = document.getElementById('modalAuthor');
+        const modalDate = document.getElementById('modalDate');
+        const modalReplies = document.getElementById('modalReplies');
+        const modalBody = document.getElementById('modalBody');
+        const modalRepliesList = document.getElementById('modalRepliesList');
+        const closeBtn = document.getElementById('modalClose');
+
+        function renderPage(page) {
+            container.innerHTML = '';
+            const start = (page - 1) * pageSize;
+            const end = Math.min(start + pageSize, allThreads.length);
+            const pageThreads = allThreads.slice(start, end);
+
+            pageThreads.forEach((thread, idx) => {
+                const row = document.createElement('div');
+                row.className = 'thread-row';
+                const globalIndex = start + idx;
+                row.setAttribute('data-index', globalIndex);
+                const icons = ['📝', '📌', '👻', '💀', '👘', '🗿', '🧿', '🔮'];
+                const icon = icons[globalIndex % icons.length];
+                row.innerHTML = `
+                    <div class="icon">${icon}</div>
+                    <div class="title">${thread.title} <span class="reply-count">(${thread.replies})</span></div>
+                    <div class="date">${thread.date}</div>
+                    <div class="last">${thread.last}</div>
+                `;
+                container.appendChild(row);
+            });
+
+            document.querySelectorAll('.thread-row').forEach(row => {
+                row.addEventListener('click', (e) => {
+                    const idx = row.getAttribute('data-index');
+                    const thread = allThreads[idx];
+                    if (!thread) return;
+                    modalTitle.innerText = thread.title;
+                    modalAuthor.innerText = '发帖人：' + thread.author;
+                    modalDate.innerText = '发布日期：' + thread.date;
+                    modalReplies.innerText = '回复 ' + thread.replies + ' 条';
+                    modalBody.innerText = thread.body;
+                    let repliesHtml = '';
+                    thread.repliesList.forEach(line => {
+                        repliesHtml += `<p>${line}</p>`;
+                    });
+                    modalRepliesList.innerHTML = repliesHtml || '<p style="color:#8f7a8c;">暂无回复。</p>';
+                    modal.style.display = 'flex';
+                });
+            });
+
+            updatePaginationButtons();
+        }
+
+        function updatePaginationButtons() {
+            let btnsHtml = '';
+            btnsHtml += `<button id="prevPage" ${currentPage === 1 ? 'disabled' : ''}>◀ 上一页</button>`;
+            for (let i = 1; i <= totalPages; i++) {
+                btnsHtml += `<button class="page-num ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+            }
+            btnsHtml += `<button id="nextPage" ${currentPage === totalPages ? 'disabled' : ''}>下一页 ▶</button>`;
+            paginationDiv.innerHTML = btnsHtml;
+
+            document.querySelectorAll('.page-num').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const page = parseInt(e.target.getAttribute('data-page'), 10);
+                    if (page !== currentPage) {
+                        currentPage = page;
+                        renderPage(currentPage);
+                    }
+                });
+            });
+            document.getElementById('prevPage')?.addEventListener('click', () => {
+                if (currentPage > 1) { currentPage--; renderPage(currentPage); }
+            });
+            document.getElementById('nextPage')?.addEventListener('click', () => {
+                if (currentPage < totalPages) { currentPage++; renderPage(currentPage); }
+            });
+        }
+
+        renderPage(1);
+
+        closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+        window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+
+        document.querySelectorAll('.login-panel button[disabled]').forEach(btn => {
+            btn.addEventListener('click', (e) => { e.preventDefault(); alert('会员注册已停止，仅可浏览。'); });
+        });
+    })();
+</script>
+</body>
+</html>
